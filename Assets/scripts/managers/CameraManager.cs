@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] private Transform targetTransform;
-    [SerializeField] private Transform pivotTransform;
-    [SerializeField] private Transform cameraTransform;
+    [SerializeField] private Transform targetTransform; // the player most of the time
+    private Transform pivotTransform;
+    private Transform cameraTransform;
     [SerializeField] private float smoothTime = 0.3f;
     [SerializeField] private float rotationSpeed = 5f;
     [SerializeField] private float topRotationLimit = 45f;
     [SerializeField] private float downRotationLimit = -45f;
+    private PlayerManager playerManager;
 
     private float defaultPosition;
     private Vector3 velocity = Vector3.zero;
@@ -21,7 +22,11 @@ public class CameraManager : MonoBehaviour
 
     public void Awake()
     {
+        playerManager = FindObjectOfType<PlayerManager>();
+        playerManager.OnLook += SetAngle;
+        
         cameraTransform = Camera.main.transform;
+        pivotTransform = cameraTransform.parent;
         defaultPosition = cameraTransform.localPosition.z;
     }
 
@@ -40,7 +45,6 @@ public class CameraManager : MonoBehaviour
         Vector3 angles = pivotTransform.eulerAngles;
         angles.x -= delta.y * rotationSpeed;
         angles.y += delta.x * rotationSpeed;
-        Debug.Log(angles.x);
     
         // Clamping the camera rotation
         if (angles.x < (360 + downRotationLimit) && angles.x > topRotationLimit) {
@@ -75,5 +79,9 @@ public class CameraManager : MonoBehaviour
         Vector3 newPosition = cameraTransform.localPosition;
         newPosition.z = Mathf.Lerp(cameraTransform.localPosition.z, targetPosition, Time.deltaTime * 100);
         cameraTransform.localPosition = newPosition;
+    }
+
+    public Transform getCameraTransform() {
+        return cameraTransform;
     }
 }
