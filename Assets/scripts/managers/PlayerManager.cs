@@ -22,7 +22,6 @@ public class PlayerManager : MonoBehaviour
         playerInputActions.Player.Enable();
         // Add the jump action
         playerInputActions.Player.Jump.performed += Jump;
-
     }
 
     void FixedUpdate()
@@ -30,6 +29,8 @@ public class PlayerManager : MonoBehaviour
         if (playerInputActions.Player.Movement.ReadValue<Vector2>() != Vector2.zero)
         {
             OnMove?.Invoke(playerInputActions.Player.Movement.ReadValue<Vector2>());
+        } else {
+            OnMove?.Invoke(Vector2.zero);
         }
     }
     void Update()

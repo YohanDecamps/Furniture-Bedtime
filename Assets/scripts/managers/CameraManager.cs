@@ -20,7 +20,7 @@ public class CameraManager : MonoBehaviour
         targetTransform = target;
     }
 
-    public void Awake()
+    void Awake()
     {
         playerManager = FindObjectOfType<PlayerManager>();
         playerManager.OnLook += SetAngle;
@@ -30,18 +30,18 @@ public class CameraManager : MonoBehaviour
         defaultPosition = cameraTransform.localPosition.z;
     }
 
-    public void LateUpdate()
+    void LateUpdate()
     {
         FollowTarget();
         HandleCameraCollision();
     }
 
-    public void FollowTarget() {
+    private void FollowTarget() {
         Vector3 targetPosition = Vector3.SmoothDamp(pivotTransform.position, targetTransform.position, ref velocity, smoothTime);
         pivotTransform.position = targetPosition;
     }
 
-    public void SetAngle(Vector2 delta) {
+    private void SetAngle(Vector2 delta) {
         Vector3 angles = pivotTransform.eulerAngles;
         angles.x -= delta.y * rotationSpeed;
         angles.y += delta.x * rotationSpeed;
@@ -64,7 +64,7 @@ public class CameraManager : MonoBehaviour
         
     }
 
-    public void HandleCameraCollision() {
+    private void HandleCameraCollision() {
 
         float targetPosition = defaultPosition;
         RaycastHit hit;
@@ -79,9 +79,5 @@ public class CameraManager : MonoBehaviour
         Vector3 newPosition = cameraTransform.localPosition;
         newPosition.z = Mathf.Lerp(cameraTransform.localPosition.z, targetPosition, Time.deltaTime * 100);
         cameraTransform.localPosition = newPosition;
-    }
-
-    public Transform getCameraTransform() {
-        return cameraTransform;
     }
 }
